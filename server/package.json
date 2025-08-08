@@ -3,14 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js",
+    "dev:worker": "node --watch worker.js"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bull": "^4.16.5",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "redis": "^5.8.0"
   }
 }

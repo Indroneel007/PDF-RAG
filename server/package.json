@@ -5,17 +5,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "dev:worker": "node --watch worker.js"
+    "dev:worker": "node --watch worker.mjs"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@langchain/community": "^0.3.50",
+    "@langchain/core": "^0.3.68",
+    "@langchain/textsplitters": "^0.1.0",
     "bull": "^4.16.5",
     "bullmq": "^5.56.9",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "multer": "^2.0.2",
-    "redis": "^5.8.0"
+    "pdf-parse": "^1.1.1",
+    "redis": "^5.8.0",
+    "semantic-chunking": "^2.4.4"
   }
 }

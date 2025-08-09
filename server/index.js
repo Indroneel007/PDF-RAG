@@ -3,9 +3,16 @@ const app = express()
 const cors = require('cors')
 const multer = require('multer')
 const redis = require('redis')
-const Queue = require('bull')
+const bullmq = require('bullmq')
 
-const queue = new Queue('file-upload-queue');
+const Queue = bullmq.Queue
+
+const queue = new Queue('file-upload-queue',{
+    connection: {
+        host: 'localhost',
+        port: 6379
+    }
+});
 
 const client = redis.createClient({
     url: "redis://localhost:6379",

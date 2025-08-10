@@ -1,9 +1,10 @@
-const express = require('express')
+import express from "express";
 const app = express()
-const cors = require('cors')
-const multer = require('multer')
-const redis = require('redis')
-const bullmq = require('bullmq')
+import cors from "cors"
+import multer from "multer"
+import redis from "redis"
+import bullmq from "bullmq"
+import chatRouter from "./routes/chat.mjs";
 
 const Queue = bullmq.Queue
 
@@ -36,6 +37,7 @@ const upload = multer({storage: storage})
 const port = 9323
 
 app.use(cors())
+app.use(express.json())
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -49,6 +51,8 @@ app.post('/upload/pdf', upload.single('pdf'), (req, res)=>{
     }))
     res.send({message: "File uploaded successfully"})
 })
+
+app.use('/chat', chatRouter)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

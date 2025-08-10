@@ -1,6 +1,24 @@
 import { Worker } from "bullmq";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { chunkit } from "semantic-chunking";
+import { QdrantVectorStore } from "@langchain/qdrant";
+import { QdrantClient } from "@qdrant/js-client-rest";
+import { Document } from "@langchain/core/documents";
+import { OllamaEmbeddings } from "@langchain/ollama";
+import { SelfQueryRetriever } from "langchain/retrievers/self_query";
+import { QdrantTranslator } from "@langchain/community/structured_query/qdrant";
+
+const embeddings = new OllamaEmbeddings({
+  model: "mxbai-embed-large", // Default value
+  baseUrl: "http://localhost:11434", // Default value
+});
+
+const client = new QdrantClient({ 
+  url: "http://localhost:6333",
+  //checkCompatibility: false
+});
+ 
+let Retriever;
 
 const worker = new Worker('file-upload-queue', async (job) => {
    // console.log(`Job:`, job.data);
@@ -26,10 +44,27 @@ const worker = new Worker('file-upload-queue', async (job) => {
       similarityThreshold: 0.5
     })
 
-    console.log(chunks)
+    const docs = chunks.map(chunk=>{
+      new Document({
+        pageContent: chunk.text,
+        metadata: {
+          document_name: chunk.document_name,
+          document_id: chunk.document_id
+        }
+      })
+    })
+    console.log(docs)
+
+    const vectorStore = await QdrantVectorStore.fromDocuments(docs, embeddings, {
+      client,
+      collectionName: "pdf-rag"
+    })
+
 },{
   connection: {
     host: 'localhost',
     port: 6379
   }
 });
+
+export default Retriever

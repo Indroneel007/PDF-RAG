@@ -18,8 +18,9 @@ const ChatComponent: React.FC = () => {
 
   const handleClick = async ()=>{
     setMessages(prev => [...prev, {role: 'user', content: message}])
-    const res = await fetch(`http://localhost:9323/chat?message=${message}`, {
-      method: 'GET'
+    const res = await fetch(`http://localhost:9323/chat`, {
+      method: 'GET',
+      body: JSON.stringify({message})
     })
     const data = await res.json()
     console.log(data)

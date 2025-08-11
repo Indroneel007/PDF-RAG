@@ -1,3 +1,4 @@
+import ChatComponent from "./components/chat";
 import FileUploadComponent from "./components/file-upload";
 export default function Home() {
   return (
@@ -7,7 +8,7 @@ export default function Home() {
           <FileUploadComponent />
         </div>
         <div className="w-[60vw] min-h-screen">
-          <h1>hello</h1>
+          <ChatComponent />
         </div>
       </div>
     </div>

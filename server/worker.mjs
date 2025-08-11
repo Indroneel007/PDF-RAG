@@ -7,16 +7,6 @@ import { Document } from "@langchain/core/documents";
 import { OllamaEmbeddings } from "@langchain/ollama";
 import { SelfQueryRetriever } from "langchain/retrievers/self_query";
 import { QdrantTranslator } from "@langchain/community/structured_query/qdrant";
-
-const embeddings = new OllamaEmbeddings({
-  model: "mxbai-embed-large", // Default value
-  baseUrl: "http://localhost:11434", // Default value
-});
-
-const client = new QdrantClient({ 
-  url: "http://localhost:6333",
-  //checkCompatibility: false
-});
  
 let Retriever;
 
@@ -44,22 +34,36 @@ const worker = new Worker('file-upload-queue', async (job) => {
       similarityThreshold: 0.5
     })
 
-    const docs = chunks.map(chunk=>{
-      new Document({
+    const docs = chunks.map(chunk => {
+      return new Document({
         pageContent: chunk.text,
         metadata: {
           document_name: chunk.document_name,
           document_id: chunk.document_id
         }
       })
-    })
+    });
     console.log(docs)
 
-    const vectorStore = await QdrantVectorStore.fromDocuments(docs, embeddings, {
-      client,
-      collectionName: "pdf-rag"
+    const client = new QdrantClient({ 
+      url: "http://localhost:6333",
+      //checkCompatibility: false
+    });
+
+    const embeddings = new OllamaEmbeddings({
+      model: "mxbai-embed-large", // Default value
+      baseUrl: "http://localhost:11434", // Default value
+    });
+
+    console.log("Done")
+    console.log(await embeddings.embedQuery("Hello"));
+    const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
+      url: "http://localhost:6333",
+      collectionName: "pdf-rag",
     })
 
+    await vectorStore.addDocuments(docs)
+    console.log("Vector store added")
 },{
   connection: {
     host: 'localhost',

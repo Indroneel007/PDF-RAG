@@ -41,6 +41,7 @@ router.post("/", async (req, res) => {
     // Generate answer
     const answer = await chain.invoke({ context, question });
 
+    console.log("Answer:", answer);
     res.json({ answer });
 
   } catch (err) {

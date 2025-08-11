@@ -24,7 +24,7 @@ const llm = new Ollama({
 
 router.post("/", async (req, res) => {
   try {
-    const { question } = req.body;
+    const { question } = req.query.message;
     if (!question) {
       return res.status(400).json({ error: "Missing 'question'" });
     }
